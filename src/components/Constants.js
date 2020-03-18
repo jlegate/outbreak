@@ -12,4 +12,5 @@ export default class Constants {
   static INFECTED = 2;
   static REMOVED = 3;
   static DEAD = 4;
+  static ISOLATING = 5;
 }

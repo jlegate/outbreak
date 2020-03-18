@@ -10,6 +10,7 @@ type Props = {
   capacityPerDay: number[],
   deadPerDay: number[],
   infectedPerDay: number[],
+  isolatedPerDay: number[],
   population: number,
   recoveredPerDay: number[],
   showDeaths: boolean,
@@ -74,6 +75,9 @@ export default class Plot extends Component<Props, State> {
     }
     if (this.state.showRecovered) {
       serieses.push(nextProps.recoveredPerDay);
+    }
+    if (this.state.showIsolated) {
+      serieses.push(nextProps.isolatedPerDay);
     }
     if (this.state.showDead) {
       serieses.push(nextProps.deadPerDay);
@@ -219,6 +223,7 @@ export default class Plot extends Component<Props, State> {
       let infected = this.props.infectedPerDay[day];
       let recovered = this.props.recoveredPerDay[day];
       let dead = this.props.deadPerDay[day];
+      let isolated = this.props.isolatedPerDay[day];
       let susceptible = this.props.population - infected - recovered - dead;
       let capacity = this.props.capacityPerDay[day];
       if (infected === null) {
@@ -348,6 +353,7 @@ export default class Plot extends Component<Props, State> {
     this.props.deadPerDay.length = 0;
     this.props.infectedPerDay.length = 0;
     this.props.recoveredPerDay.length = 0;
+    this.props.isolatedPerDay.length = 0;
 
     this.redraw();
     this.forceUpdate();
@@ -359,6 +365,7 @@ export default class Plot extends Component<Props, State> {
     let infectedPercent = Math.round(this.props.infectedPerDay[this.props.infectedPerDay.length - 1] / this.props.population * 100);
     let recoveredPercent = Math.round(this.props.recoveredPerDay[this.props.recoveredPerDay.length - 1] / this.props.population * 100);
     let deadPercent = Math.round(this.props.deadPerDay[this.props.deadPerDay.length - 1] / this.props.population * 100);
+    let isolatedPercent = Math.round(this.props.isolatedPerDay[this.props.isolatedPerDay.length - 1] / this.props.population * 100);
 
     if (isNaN(infectedPercent)) {
       infectedPercent = 0;
@@ -375,6 +382,8 @@ export default class Plot extends Component<Props, State> {
 
     // let recoveredCB = <label><input type="checkbox" checked={this.state.showRecovered} onChange={(e) => this.setState({showRecovered: e.target.checked})}/> Recovered: {recoveredPercent}%</label>
     let recoveredCB = <span><NodeLegend type="removed"/> &nbsp;Recovered: {recoveredPercent}%</span>
+
+    let isolatedCB = <span><NodeLegend type="isolated"/> &nbsp;Self-quarantined: {isolatedPercent}%</span>
 
     let deadCB = null;
     if (this.props.showDeaths) {
@@ -401,6 +410,7 @@ export default class Plot extends Component<Props, State> {
             </div>
             <div style={{display: 'flex', flexDirection: 'column'}}>
               <div>{infectedCB}</div>
+              <div>{isolatedCB}</div>
               <div>{recoveredCB}</div>
               <div>{deadCB}</div>
             </div>

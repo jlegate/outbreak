@@ -99,6 +99,7 @@ type State = {
   capacityPerDay: number[],
   deadPerDay: number[],
   infectedPerDay: number[],
+  isolatedPerDay: number[],
   recoveredPerDay: number[],
 }
 
@@ -252,6 +253,7 @@ export default class Grid extends Component<Props, State> {
       capacityPerDay: [],
       deadPerDay: [],
       infectedPerDay: [],
+      isolatedPerDay: [],
       recoveredPerDay: [],
     };
     if (fromConstructor) {
@@ -315,6 +317,7 @@ export default class Grid extends Component<Props, State> {
     this.state.capacityPerDay = [];
     this.state.deadPerDay = [];
     this.state.infectedPerDay = [];
+    this.state.isolatedPerDay = [];
     this.state.recoveredPerDay = [];
   }
 
@@ -337,12 +340,14 @@ export default class Grid extends Component<Props, State> {
       this.state.capacityPerDay.push(null);
       this.state.deadPerDay.push(null);
       this.state.infectedPerDay.push(null);
+      this.state.isolatedPerDay.push(null);
       this.state.recoveredPerDay.push(null);
     }
     if (this.state.infectedPerDay.length === 0 || this.state.infectedPerDay[this.state.infectedPerDay.length-1] === null) {
       this.state.capacityPerDay.push(this.state.hospitalCapacityPct * this.props.gridRows * this.props.gridRows);
       this.state.deadPerDay.push(0);
       this.state.infectedPerDay.push(this.props.nug);
+      this.state.isolatedPerDay.push(0);
       this.state.recoveredPerDay.push(0);
     }
 
@@ -478,7 +483,7 @@ export default class Grid extends Component<Props, State> {
       }
     }
     let chanceOfIsolationAfterSymptoms = this.state.chanceOfIsolationAfterSymptoms;
-    if (!this.props.showChanceOfIsolationAfterSymptomsSlider) {
+    if (!this.props.showChanceOfIsolationAfterSymptomsSlider && !this.props.showAllControls) {
       chanceOfIsolationAfterSymptoms = 0;
     }
     let overCapacity = this.state.hospitalCapacityPct > -1 && actualInfectedNodes > this.state.hospitalCapacityPct * (nRows*nCols);
@@ -495,6 +500,7 @@ export default class Grid extends Component<Props, State> {
     }
     let actualDeadNodes = 0;
     let actualRecoveredNodes = 0;
+    let actualIsolatedNodes = 0;
     for (let r = 0; r < nRows; r++) {
       for (let c = 0; c < nCols; c++) {
         let node = this.grid[r][c];
@@ -503,11 +509,15 @@ export default class Grid extends Component<Props, State> {
         } else if (node.getNextState() === Constants.DEAD) {
           actualDeadNodes++;
         }
+        if (node.isIsolating()) {
+          actualIsolatedNodes++;
+        }
       }
     }
     this.state.capacityPerDay.push(this.state.hospitalCapacityPct * this.props.gridRows * this.props.gridRows);
     this.state.deadPerDay.push(actualDeadNodes);
     this.state.infectedPerDay.push(actualInfectedNodes);
+    this.state.isolatedPerDay.push(actualIsolatedNodes);
     this.state.recoveredPerDay.push(actualRecoveredNodes);
 
     this.state.centerNodeNeighborsToDisplay = centerNodeNeighborsToDisplay;
@@ -998,6 +1008,7 @@ export default class Grid extends Component<Props, State> {
                    capacityPerDay={this.state.capacityPerDay}
                    deadPerDay={this.state.deadPerDay}
                    infectedPerDay={this.state.infectedPerDay}
+                   isolatedPerDay={this.state.isolatedPerDay}
                    population={population}
                    recoveredPerDay={this.state.recoveredPerDay}
                    showDeaths={this.props.showDeaths} />;
