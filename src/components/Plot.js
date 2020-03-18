@@ -376,6 +376,9 @@ export default class Plot extends Component<Props, State> {
     if (isNaN(deadPercent)) {
       deadPercent = 0;
     }
+    if (isNaN(isolatedPercent)) {
+      isolatedPercent = 0;
+    }
 
     // let infectedCB = <label><input type="checkbox" checked={this.state.showInfected} onChange={(e) => this.setState({showInfected: e.target.checked})}/> Infected: {infectedPercent}%</label>
     let infectedCB = <span><NodeLegend type="infected"/> &nbsp;Infected: {infectedPercent}%</span>
