@@ -40,6 +40,7 @@ class App extends Component<Props, State> {
     let infected = <code className="code-infectious">Infected</code>;
     let recovered = <code className="code-removed">Recovered</code>;
     let dead = <code className="code-dead">Dead</code>;
+    let selfQuarantined = <code className="code-quarantined">Self-quarantined</code>;
 
     // noinspection HtmlRequiredAltAttribute
     return (
@@ -653,6 +654,48 @@ class App extends Component<Props, State> {
 
         <div>
           &nbsp;
+        </div>
+        <div>
+          <a name="self-quarantine"/>
+          <h3>Self-quarantine</h3>
+        </div>
+        <div>
+          (Thanks to <a href="https://twitter.com/jasonlegate">Jason Legate</a> for suggesting and coding this addition to the disease model.)
+        </div>
+        <div>
+          In the simulation below, you can vary the <strong>self-quarantine rate</strong>, i.e., the chance that a patient will choose to isolate themselves once they become symptomatic. Patients who become {selfQuarantined} will be drawn in blue instead of red.
+        </div>
+        <div>
+          Additionally, you can vary how strict they are with the <strong>self-quarantine strictness</strong> parameters. At 100 percent strictness, patients who are isolating themselves have 0 encounters with other people. At 0 percent strictness, they have their normal number of encounters. And it varies linearly in between.
+        </div>
+        <div>
+          Let's start the self-quarantine rate at 25 percent and the strictness also at 25 percent. What does it take to keep the outbreak contained?
+        </div>
+        <Figure>
+          <Grid degree={24}
+                gridRows={51}
+                gridCols={51}
+                personHours={20}
+                nodeSize={10}
+                nug={5}
+                randomSeed={100}
+                showAliveFraction={true}
+                showInteractions={true}
+                showPersonHoursSlider={true}
+                showTransmissionProbabilitySlider={true}
+                showChanceOfIsolationAfterSymptomsSlider={true}
+                showDecreaseInEncountersAfterSymptomsSlider={true}
+                showTravelRadiusSlider={true}
+                speed={0.8}
+                transmissionProbability={0.21}
+                travelRadius={20}
+          />
+        </Figure>
+        <div>
+          As you can see, if people voluntarily self-quarantine (once they show symptoms) and are strict about isolating themselves, the spread can be mitigated. Unfortunately, because patients are contagious during the incubation period (before they have a chance to notice their own symptoms), it's hard to stop the spread entirely.
+        </div>
+        <div>
+          For most diseases, self-quarantine won't solve the problem on its own. Rather, it's one tool among many (including better hygiene, social distances, travel restrictions, etc.) that <em>all together</em> can bring an outbreak under control. A big lesson here is that every strategy complements every other strategy.
         </div>
         <div>
           <h3>Full model</h3>
